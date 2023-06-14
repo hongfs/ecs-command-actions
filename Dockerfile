@@ -13,4 +13,6 @@ WORKDIR /build
 
 COPY --from=build /code/main .
 
-CMD [ "./main" ]
+RUN chmod +x ./main
+
+CMD [ "/build/main" ]
