@@ -1,0 +1,6 @@
+# action.yml
+name: 'ECS Command'
+description: '阿里云ECS命令执行'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
