@@ -11,7 +11,7 @@
     # 配置多个标签来进行过滤
     ALIYUN_TAGS: tags=1;tags2=2
     # 执行的命令
-    ALIYUN_SCRIPT: >
+    ALIYUN_SCRIPT: >-
       #!/bin/bash
       echo "hello world"
 ```
