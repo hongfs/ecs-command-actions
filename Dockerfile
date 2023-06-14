@@ -13,4 +13,4 @@ WORKDIR /build
 
 COPY --from=build /code/main .
 
-ENTRYPOINT [ "./main" ]
+CMD [ "./main" ]
