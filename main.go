@@ -51,8 +51,6 @@ func init() {
 				panic("TAGS format error")
 			}
 		}
-	} else {
-		panic("TAGS is empty")
 	}
 
 	if value := os.Getenv("ALIYUN_SCRIPT"); value != "" {
