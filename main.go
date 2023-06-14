@@ -44,8 +44,8 @@ func init() {
 		values := strings.Split(value, ";")
 
 		for _, v := range values {
-			if strings.Contains(v, ":") {
-				kv := strings.Split(v, ":")
+			if strings.Contains(v, "=") {
+				kv := strings.Split(v, "=")
 				Tags[kv[0]] = kv[1]
 			} else {
 				panic("TAGS format error")
