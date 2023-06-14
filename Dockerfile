@@ -7,4 +7,10 @@ COPY . .
 RUN go mod tidy && \
     env GOOS=linux GOARCH=amd64 go build -o main main.go
 
+FROM ghcr.io/hongfs/env:alpine
+
+WORKDIR /build
+
+COPY --from=build /code/main .
+
 CMD ["./main"]
