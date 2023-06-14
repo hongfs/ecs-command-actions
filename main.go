@@ -2,14 +2,15 @@ package main
 
 import (
 	"errors"
-	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v3/client"
-	"github.com/alibabacloud-go/tea/tea"
 	"log"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v3/client"
+	"github.com/alibabacloud-go/tea/tea"
 )
 
 var AccessKeyId = ""
@@ -76,6 +77,8 @@ func main() {
 	if err != nil {
 		panic("handle error: " + err.Error())
 	}
+
+	os.Exit(0)
 }
 
 // handle 处理
