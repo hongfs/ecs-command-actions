@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/hongfs/ecs-metadata/pkg/metadata"
 	"log"
 	"os"
 	"strings"
@@ -15,6 +16,7 @@ import (
 
 var AccessKeyId = ""
 var AccessKeySecret = ""
+var SecurityToken = ""
 var Region = ""
 var Tags = make(map[string]string)
 var Script = ""
@@ -22,16 +24,10 @@ var Client *ecs20140526.Client
 
 // init 初始化
 func init() {
-	if value := os.Getenv("ALIYUN_ACCESS_KEY_ID"); value != "" {
-		AccessKeyId = value
-	} else {
-		panic("ACCESS_KEY_ID is empty")
-	}
+	err := loadCredentials()
 
-	if value := os.Getenv("ALIYUN_ACCESS_KEY_SECRET"); value != "" {
-		AccessKeySecret = value
-	} else {
-		panic("ACCESS_KEY_SECRET is empty")
+	if err != nil {
+		panic("load credentials error: " + err.Error())
 	}
 
 	if value := os.Getenv("ALIYUN_REGION"); value != "" {
@@ -220,11 +216,17 @@ func getInstances() ([]string, error) {
 
 // getClient 获取客户端
 func getClient() (_result *ecs20140526.Client, _err error) {
-	return ecs20140526.NewClient(&openapi.Config{
+	config := &openapi.Config{
 		AccessKeyId:     tea.String(AccessKeyId),
 		AccessKeySecret: tea.String(AccessKeySecret),
 		RegionId:        tea.String(Region),
-	})
+	}
+
+	if SecurityToken != "" {
+		config.SecurityToken = tea.String(SecurityToken)
+	}
+
+	return ecs20140526.NewClient(config)
 }
 
 // splitSlice 切分切片
@@ -242,4 +244,44 @@ func splitSlice(slice []string, chunkSize int) [][]string {
 	}
 
 	return chunks
+}
+
+func loadCredentials() error {
+	if ramValue := os.Getenv("ALIYUN_RAM_NAME"); ramValue != "" {
+		ram := metadata.Ram(ramValue)
+
+		if ram.AccessKeyID != "" {
+			AccessKeyId = ram.AccessKeyID
+		}
+
+		if ram.AccessKeySecret != "" {
+			AccessKeySecret = ram.AccessKeySecret
+		}
+
+		if ram.SecurityToken != "" {
+			SecurityToken = ram.SecurityToken
+		}
+	}
+
+	if AccessKeyId == "" {
+		value := os.Getenv("ALIYUN_ACCESS_KEY_ID")
+
+		if value == "" {
+			return errors.New("ACCESS_KEY_ID is empty")
+		}
+
+		AccessKeyId = value
+	}
+
+	if AccessKeySecret == "" {
+		value := os.Getenv("ALIYUN_ACCESS_KEY_SECRET")
+
+		if value == "" {
+			return errors.New("ALIYUN_ACCESS_KEY_SECRET is empty")
+		}
+
+		AccessKeySecret = value
+	}
+
+	return nil
 }
