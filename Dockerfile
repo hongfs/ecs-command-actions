@@ -1,4 +1,4 @@
-FROM ghcr.io/hongfs/env:golang120 as build
+FROM ghcr.io/hongfs/env:golang121 as build
 
 WORKDIR /code
 
