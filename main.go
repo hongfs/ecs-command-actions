@@ -231,6 +231,12 @@ func getClient() (_result *ecs20140526.Client, _err error) {
 		config.SecurityToken = tea.String(SecurityToken)
 	}
 
+	endpoint := os.Getenv("ALIYUN_ENDPOINT")
+
+	if endpoint != "" {
+		config.Endpoint = tea.String(endpoint)
+	}
+
 	return ecs20140526.NewClient(config)
 }
 
