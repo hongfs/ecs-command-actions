@@ -188,13 +188,18 @@ func getInstances() ([]string, error) {
 	var ids = make([]string, 0)
 
 	for {
-		result, err := Client.DescribeInstances(&ecs20140526.DescribeInstancesRequest{
+		input := &ecs20140526.DescribeInstancesRequest{
 			RegionId:   tea.String(Region),
 			Status:     tea.String("Running"), // 必须是运行中的
-			Tag:        tags,
 			PageNumber: tea.Int32(page),
 			PageSize:   tea.Int32(size),
-		})
+		}
+
+		if len(tags) != 0 {
+			input.Tag = tags
+		}
+
+		result, err := Client.DescribeInstances(input)
 
 		if err != nil {
 			return nil, err
