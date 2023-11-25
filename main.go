@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"github.com/duke-git/lancet/v2/fileutil"
 	"github.com/hongfs/ecs-metadata/pkg/metadata"
 	"log"
 	"os"
@@ -51,6 +52,12 @@ func init() {
 
 	if value := os.Getenv("ALIYUN_SCRIPT"); value != "" {
 		Script = value
+	} else if fileutil.IsExist("/tmp/aliyun.sh") {
+		Script, err = fileutil.ReadFileToString("/tmp/aliyun.sh")
+
+		if err != nil {
+			panic("read script error: " + err.Error())
+		}
 	} else {
 		panic("SCRIPT is empty")
 	}

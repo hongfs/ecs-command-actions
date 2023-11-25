@@ -6,6 +6,8 @@ require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.0.2
 	github.com/alibabacloud-go/ecs-20140526/v3 v3.0.7
 	github.com/alibabacloud-go/tea v1.1.19
+	github.com/duke-git/lancet/v2 v2.2.4
+	github.com/hongfs/ecs-metadata v0.0.0-20231112134711-7bc0ea156c44
 )
 
 require (
@@ -18,7 +20,6 @@ require (
 	github.com/alibabacloud-go/tea-xml v1.1.2 // indirect
 	github.com/aliyun/credentials-go v1.1.2 // indirect
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
-	github.com/hongfs/ecs-metadata v0.0.0-20231016024113-6aec29ce85df // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
