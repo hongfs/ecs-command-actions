@@ -2,17 +2,18 @@ package main
 
 import (
 	"errors"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
+	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v3/client"
+	"github.com/alibabacloud-go/tea/tea"
 	"github.com/duke-git/lancet/v2/fileutil"
 	"github.com/hongfs/ecs-metadata/pkg/metadata"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 	"sync"
 	"time"
-
-	openapi "github.com/alibabacloud-go/darabonba-openapi/v2/client"
-	ecs20140526 "github.com/alibabacloud-go/ecs-20140526/v3/client"
-	"github.com/alibabacloud-go/tea/tea"
 )
 
 var AccessKeyId = ""
@@ -281,11 +282,21 @@ func loadCredentials() error {
 		}
 	}
 
+	var err error
+
 	if AccessKeyId == "" {
 		value := os.Getenv("ALIYUN_ACCESS_KEY_ID")
 
 		if value == "" {
 			return errors.New("ACCESS_KEY_ID is empty")
+		}
+
+		if strings.HasPrefix(value, "https://") {
+			value, err = getConfigContent(value)
+
+			if err != nil {
+				return err
+			}
 		}
 
 		AccessKeyId = value
@@ -298,8 +309,40 @@ func loadCredentials() error {
 			return errors.New("ALIYUN_ACCESS_KEY_SECRET is empty")
 		}
 
+		if strings.HasPrefix(value, "https://") {
+			value, err = getConfigContent(value)
+
+			if err != nil {
+				return err
+			}
+		}
+
 		AccessKeySecret = value
 	}
 
 	return nil
+}
+
+func getConfigContent(value string) (string, error) {
+	resp, err := http.Get(value)
+
+	if err != nil {
+		return "", err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.New("get config error: " + resp.Status)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		return "", err
+	}
+
+	content := strings.TrimSpace(string(body))
+
+	return content, nil
 }
