@@ -1,11 +1,11 @@
-FROM ghcr.io/hongfs/env:golang124 as build
+FROM docker.io/library/golang:1.24.2-alpine as build
 
 WORKDIR /code
 
 COPY . .
 
 RUN go mod tidy && \
-    env GOOS=linux GOARCH=amd64 go build -o main main.go
+    env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main main.go
 
 FROM ghcr.io/hongfs/env:alpine
 

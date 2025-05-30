@@ -1,6 +1,6 @@
 module main
 
-go 1.24.3
+go 1.24
 
 require (
 	github.com/alibabacloud-go/darabonba-openapi/v2 v2.1.7
