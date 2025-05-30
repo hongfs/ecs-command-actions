@@ -32,13 +32,13 @@ func init() {
 		panic("load credentials error: " + err.Error())
 	}
 
-	if value := os.Getenv("ALIYUN_REGION"); value != "" {
+	if value := getEnv("ALIYUN_REGION"); value != "" {
 		Region = value
 	} else {
 		panic("REGIONS is empty")
 	}
 
-	if value := os.Getenv("ALIYUN_TAGS"); value != "" {
+	if value := getEnv("ALIYUN_TAGS"); value != "" {
 		values := strings.Split(value, ";")
 
 		for _, v := range values {
@@ -51,7 +51,7 @@ func init() {
 		}
 	}
 
-	if value := os.Getenv("ALIYUN_SCRIPT"); value != "" {
+	if value := getEnv("ALIYUN_SCRIPT"); value != "" {
 		Script = value
 	} else if fileutil.IsExist("/tmp/aliyun.sh") {
 		Script, err = fileutil.ReadFileToString("/tmp/aliyun.sh")
@@ -239,7 +239,7 @@ func getClient() (_result *ecs20140526.Client, _err error) {
 		config.SecurityToken = tea.String(SecurityToken)
 	}
 
-	endpoint := os.Getenv("ALIYUN_ENDPOINT")
+	endpoint := getEnv("ALIYUN_ENDPOINT")
 
 	if endpoint != "" {
 		config.Endpoint = tea.String(endpoint)
@@ -266,7 +266,7 @@ func splitSlice(slice []string, chunkSize int) [][]string {
 }
 
 func loadCredentials() error {
-	if ramValue := os.Getenv("ALIYUN_RAM_NAME"); ramValue != "" {
+	if ramValue := getEnv("ALIYUN_RAM_NAME"); ramValue != "" {
 		ram := metadata.Ram(ramValue)
 
 		if ram.AccessKeyID != "" {
@@ -285,7 +285,7 @@ func loadCredentials() error {
 	var err error
 
 	if AccessKeyId == "" {
-		value := os.Getenv("ALIYUN_ACCESS_KEY_ID")
+		value := getEnv("ALIYUN_ACCESS_KEY_ID")
 
 		if value == "" {
 			return errors.New("ACCESS_KEY_ID is empty")
@@ -303,7 +303,7 @@ func loadCredentials() error {
 	}
 
 	if AccessKeySecret == "" {
-		value := os.Getenv("ALIYUN_ACCESS_KEY_SECRET")
+		value := getEnv("ALIYUN_ACCESS_KEY_SECRET")
 
 		if value == "" {
 			return errors.New("ALIYUN_ACCESS_KEY_SECRET is empty")
@@ -345,4 +345,15 @@ func getConfigContent(value string) (string, error) {
 	content := strings.TrimSpace(string(body))
 
 	return content, nil
+}
+
+func getEnv(key string) string {
+	value := os.Getenv(key)
+
+	if value == "" {
+		// 适配 cnb
+		value = os.Getenv("PLUGIN_" + key)
+	}
+
+	return value
 }
